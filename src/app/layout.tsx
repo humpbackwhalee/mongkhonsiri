@@ -1,15 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Prompt, IBM_Plex_Sans_Thai_Looped } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+import Header from "./components/Header";
+
+const prompt = Prompt({
+  subsets: ["thai"],
+  display: "swap",
+  weight: ["300", "400", "600"],
+  variable: "--font-prompt",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const ibmPlexSansThaiLooped = IBM_Plex_Sans_Thai_Looped({
+  weight: ["300", "400", "600"],
+  variable: "--font-ibm_plex_sans_thai_looped",
+  subsets: ["thai"],
 });
 
 export const metadata: Metadata = {
@@ -23,10 +28,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="th">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${prompt.variable} ${ibmPlexSansThaiLooped.variable} antialiased flex flex-col min-h-screen items-center`}
       >
+        <Header />
         {children}
       </body>
     </html>

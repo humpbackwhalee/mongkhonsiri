@@ -45,6 +45,7 @@ const PrayerItem = React.memo(PrayerItemInner);
 
 export { PrayerItem };
 
+// Make sure PrayerLyricsLoop is the default export
 export default function PrayerLyricsLoop() {
   const [selectedPrayer, setSelectedPrayer] = useState<Prayer>(prayerData[0]);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);

@@ -1,7 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import prayerDataObject from '../data/prayerData';
-import PrayerItem from './PrayerItem';
 
 // กำหนด Type สำหรับข้อมูลบทสวด
 type Prayer = {
@@ -94,7 +93,7 @@ export default function PrayerLyricsLoop() {
     }
   }, []);
 
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm] = useState('');
 
   // กรองรายการบทสวดตามคำค้นหา
   const filteredPrayers = useMemo(() => {

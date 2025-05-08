@@ -183,7 +183,7 @@ export default function PrayerLyricsLoop() {
             <p
               key={index}
               ref={index === currentLineIndex ? currentLineRef : null}
-              className={`text-xl leading-relaxed text-center py-1 px-4 w-fit transition-all duration-200 ${index === currentLineIndex ? 'bg-gray-500 text-white font-semibold rounded' : 'text-black'
+              className={`text-4xl leading-relaxed text-center py-1 px-4 w-fit transition-all duration-200 ${index === currentLineIndex ? 'bg-gray-500 text-white font-semibold rounded' : 'text-black'
                 }`}
             >
               {line}

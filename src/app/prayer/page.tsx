@@ -7,50 +7,54 @@ type Prayer = {
   key: string;
   title: string;
   prayerText: string[];
-  [key: string]: any;
+  [key: string]: unknown;
 };
+
+
 
 // แปลง object เป็น array เพื่อใช้งานกับ map
 const prayerData: Prayer[] = Object.entries(prayerDataObject).map(([key, value]) => ({
   key,
+  title: value.title,
+  prayerText: value.prayerText,
   ...value as Omit<Prayer, 'key'>
 }));
 
+
 // คอมโพเนนต์แสดงรายการบทสวด (แยกเป็น memo component เพื่อป้องกัน re-render ที่ไม่จำเป็น)
-const PrayerItem = React.memo(({ 
-  prayer, 
-  isSelected, 
-  onSelect 
-}: { 
-  prayer: Prayer; 
-  isSelected: boolean; 
-  onSelect: (prayer: Prayer) => void 
+const PrayerItemInner = ({
+  prayer,
+  isSelected,
+  onSelect
+}: {
+  prayer: Prayer;
+  isSelected: boolean;
+  onSelect: (prayer: Prayer) => void;
 }) => (
   <div
     onClick={() => onSelect(prayer)}
-    className={`cursor-pointer text-xl leading-relaxed py-1 px-2 rounded 
+    className={`cursor-pointer text-xl leading-relaxed py-1 px-2 rounded
       ${isSelected ? 'bg-black text-white font-bold' : 'text-black hover:bg-gray-200'}`}
     role="button"
     aria-pressed={isSelected}
   >
     {prayer.title}
   </div>
-));
+);
+
+PrayerItemInner.displayName = 'PrayerItem';
+
+const PrayerItem = React.memo(PrayerItemInner);
+
+export { PrayerItem };
 
 export default function PrayerLyricsLoop() {
-  // ตรวจสอบว่ามีข้อมูลบทสวดหรือไม่
-  if (prayerData.length === 0) {
-    return <div className="flex justify-center items-center h-screen">ไม่พบข้อมูลบทสวด</div>;
-  }
-
   const [selectedPrayer, setSelectedPrayer] = useState<Prayer>(prayerData[0]);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false); // ใช้ state แทน ref สำหรับ isPlaying
   const [speed, setSpeed] = useState(2000); // เพิ่ม state สำหรับปรับความเร็ว
-
   const timeoutId = useRef<NodeJS.Timeout | null>(null);
   const currentLineRef = useRef<HTMLParagraphElement | null>(null);
-
   const prayerText = useMemo(() => selectedPrayer?.prayerText || [], [selectedPrayer]);
   const prayerTitle = useMemo(() => selectedPrayer?.title || 'ไม่มีชื่อบทสวด', [selectedPrayer]);
 
@@ -71,7 +75,7 @@ export default function PrayerLyricsLoop() {
         setCurrentLineIndex((prevIndex) => (prevIndex + 1) % prayerText.length);
       }, speed);
       timeoutId.current = id;
-      
+
       return () => clearTimeout(id);
     }
   }, [currentLineIndex, prayerText, isPlaying, speed]);
@@ -91,6 +95,22 @@ export default function PrayerLyricsLoop() {
       }
     }
   }, []);
+
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // กรองรายการบทสวดตามคำค้นหา
+  const filteredPrayers = useMemo(() => {
+    if (!searchTerm.trim()) return prayerData;
+    return prayerData.filter(prayer =>
+      prayer.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm]);
+
+
+  // ตรวจสอบว่ามีข้อมูลบทสวดหรือไม่
+  if (prayerData.length === 0) {
+    return <div className="flex justify-center items-center h-screen">ไม่พบข้อมูลบทสวด</div>;
+  }
 
   const handlePlay = () => {
     setIsPlaying(true);
@@ -112,13 +132,13 @@ export default function PrayerLyricsLoop() {
   };
 
   const handlePrevLine = () => {
-    setCurrentLineIndex((prevIndex) => 
+    setCurrentLineIndex((prevIndex) =>
       prevIndex > 0 ? prevIndex - 1 : prayerText.length - 1
     );
   };
 
   const handleNextLine = () => {
-    setCurrentLineIndex((prevIndex) => 
+    setCurrentLineIndex((prevIndex) =>
       (prevIndex + 1) % prayerText.length
     );
   };
@@ -127,19 +147,10 @@ export default function PrayerLyricsLoop() {
     setSpeed(Number(e.target.value));
   };
 
-  const [searchTerm, setSearchTerm] = useState('');
-  
-  // กรองรายการบทสวดตามคำค้นหา
-  const filteredPrayers = useMemo(() => {
-    if (!searchTerm.trim()) return prayerData;
-    return prayerData.filter(prayer => 
-      prayer.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [searchTerm]);
-
   return (
-    <div className="flex flex-col md:flex-row bg-white text-black min-h-screen">
-      <div className="w-full md:w-1/3 p-4 border-b md:border-r md:border-b-0 border-black bg-gray-100">
+    <div className="grid grid-cols-1 md:grid-cols-3 bg-white text-black ">
+      {/* Prayer list */}
+      <div className="md:col-span-1 p-4 border-b md:border-r md:border-b-0 border-slate-500 bg-gray-100">
         <div className="mb-4">
           <input
             type="text"
@@ -150,7 +161,7 @@ export default function PrayerLyricsLoop() {
             aria-label="ค้นหาบทสวด"
           />
         </div>
-        
+
         <div className="max-h-[60vh] overflow-y-auto">
           {filteredPrayers.map((prayer) => (
             <PrayerItem
@@ -163,42 +174,43 @@ export default function PrayerLyricsLoop() {
         </div>
       </div>
 
-      <div className="w-full md:w-2/3 p-6 flex flex-col items-center gap-4 bg-white text-black">
+      {/* Prayer player */}
+      <div className="md:col-span-2 p-6 flex flex-col items-center gap-4 bg-white text-black">
         <h1 className="text-2xl font-semibold border-b border-black pb-2 w-full text-center">{prayerTitle}</h1>
-        
+
         <div className="flex flex-col items-center max-h-[50vh] overflow-y-auto w-full">
           {prayerText.map((line, index) => (
             <p
               key={index}
               ref={index === currentLineIndex ? currentLineRef : null}
-              className={`text-xl leading-relaxed text-center py-1 px-4 w-full transition-all duration-200 ${
-                index === currentLineIndex ? 'bg-black text-white font-bold rounded' : 'text-black'
-              }`}
+              className={`text-xl leading-relaxed text-center py-1 px-4 w-fit transition-all duration-200 ${index === currentLineIndex ? 'bg-gray-500 text-white font-semibold rounded' : 'text-black'
+                }`}
             >
               {line}
             </p>
           ))}
         </div>
 
+        {/* Control Buttons */}
         <div className="flex flex-wrap gap-2 mt-4 justify-center">
-          <button 
-            className="bg-black hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded" 
+          <button
+            className="bg-black hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded"
             onClick={handlePlay}
             disabled={isPlaying}
             aria-label="เริ่มอ่านบทสวด"
           >
             เล่น
           </button>
-          <button 
-            className="bg-white hover:bg-gray-200 text-black border border-black font-semibold py-2 px-4 rounded" 
+          <button
+            className="bg-white hover:bg-gray-200 text-black border border-black font-semibold py-2 px-4 rounded"
             onClick={handlePause}
             disabled={!isPlaying}
             aria-label="หยุดอ่านบทสวด"
           >
             หยุด
           </button>
-          <button 
-            className="bg-gray-800 hover:bg-black text-white font-semibold py-2 px-4 rounded" 
+          <button
+            className="bg-gray-800 hover:bg-black text-white font-semibold py-2 px-4 rounded"
             onClick={handleReset}
             aria-label="รีเซ็ตการอ่าน"
           >
@@ -207,8 +219,8 @@ export default function PrayerLyricsLoop() {
         </div>
 
         <div className="flex gap-2 mt-2 items-center">
-          <button 
-            className="bg-gray-300 hover:bg-gray-400 text-black font-semibold py-1 px-3 rounded-full" 
+          <button
+            className="bg-gray-300 hover:bg-gray-400 text-black font-semibold py-1 px-3 rounded-full"
             onClick={handlePrevLine}
             aria-label="ย้อนกลับบรรทัด"
           >
@@ -217,8 +229,8 @@ export default function PrayerLyricsLoop() {
           <p className="text-sm text-gray-600">
             บรรทัดที่: {currentLineIndex + 1} / {prayerText.length}
           </p>
-          <button 
-            className="bg-gray-300 hover:bg-gray-400 text-black font-semibold py-1 px-3 rounded-full" 
+          <button
+            className="bg-gray-300 hover:bg-gray-400 text-black font-semibold py-1 px-3 rounded-full"
             onClick={handleNextLine}
             aria-label="ไปบรรทัดถัดไป"
           >

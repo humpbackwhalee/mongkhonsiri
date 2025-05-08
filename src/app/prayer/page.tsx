@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import prayerDataObject from '../data/prayerData';
+import PrayerItem from './PrayerItem';
 
 // กำหนด Type สำหรับข้อมูลบทสวด
 type Prayer = {
@@ -10,8 +11,6 @@ type Prayer = {
   [key: string]: unknown;
 };
 
-
-
 // แปลง object เป็น array เพื่อใช้งานกับ map
 const prayerData: Prayer[] = Object.entries(prayerDataObject).map(([key, value]) => ({
   key,
@@ -19,7 +18,6 @@ const prayerData: Prayer[] = Object.entries(prayerDataObject).map(([key, value])
   prayerText: value.prayerText,
   ...value as Omit<Prayer, 'key'>
 }));
-
 
 // คอมโพเนนต์แสดงรายการบทสวด (แยกเป็น memo component เพื่อป้องกัน re-render ที่ไม่จำเป็น)
 const PrayerItemInner = ({
@@ -151,17 +149,7 @@ export default function PrayerLyricsLoop() {
     <div className="grid grid-cols-1 md:grid-cols-3 bg-white text-black ">
       {/* Prayer list */}
       <div className="md:col-span-1 p-4 border-b md:border-r md:border-b-0 border-slate-500 bg-gray-100">
-        <div className="mb-4">
-          <input
-            type="text"
-            placeholder="ค้นหาบทสวด..."
-            className="w-full p-2 border border-gray-300 rounded"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            aria-label="ค้นหาบทสวด"
-          />
-        </div>
-
+        {/* ... ส่วน input ค้นหา ... */}
         <div className="max-h-[60vh] overflow-y-auto">
           {filteredPrayers.map((prayer) => (
             <PrayerItem

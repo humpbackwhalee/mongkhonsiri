@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface Prayer {
-  key: string;
+  id: number;
   title: string;
   prayerText: string[];
 }
@@ -15,9 +15,8 @@ interface PrayerItemProps {
 const PrayerItem: React.FC<PrayerItemProps> = ({ prayer, isSelected, onSelect }) => {
   return (
     <div
-      className={`w-full px-4 py-2 cursor-pointer transition-colors ${
-        isSelected ? 'bg-gray-100 rounded-lg' : 'hover:bg-gray-50 hover:rounded-lg'
-      }`}
+      className={`w-full px-4 py-2 cursor-pointer transition-colors ${isSelected ? 'bg-gray-100 rounded-lg' : 'hover:bg-gray-50 hover:rounded-lg'
+        }`}
       onClick={() => onSelect(prayer)}
       aria-selected={isSelected}
       role="option"

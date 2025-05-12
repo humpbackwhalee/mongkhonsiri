@@ -8,14 +8,14 @@ interface MobileHeaderProps {
 
 const MobileHeader: React.FC<MobileHeaderProps> = ({ title, isSidebarOpen, toggleSidebar }) => {
   return (
-    <div className="lg:hidden flex justify-between items-center p-4 border-b border-gray-200 bg-white sticky top-0 z-10">
-      <h1 className="text-xl font-medium">{title}</h1>
-      <button 
+    <div className="lg:hidden flex justify-between items-center p-4 border-b border-muted bg-background sticky top-0 z-10">
+      <h1 className="text-xl font-medium text-text">{title}</h1>
+      <button
         onClick={toggleSidebar}
-        className="p-2 rounded-md bg-gray-100 hover:bg-gray-200"
-        aria-label={isSidebarOpen ? "ปิดรายการบทสวด" : "เปิดรายการบทสวด"}
+        className="p-2 rounded-md bg-muted hover:bg-secondary text-text"
+        aria-label={isSidebarOpen ? 'ปิดรายการบทสวด' : 'เปิดรายการบทสวด'}
       >
-        {isSidebarOpen ? "✕" : "☰"}
+        {isSidebarOpen ? '✕' : '☰'}
       </button>
     </div>
   );

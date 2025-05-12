@@ -21,7 +21,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside className={`
       ${isSidebarOpen ? 'block' : 'hidden'} 
-      lg:block w-full h-fit overflow-hidden transition-all duration-300 fixed lg:static top-32 left-0 right-0 bottom-0 z-20 bg-white p-4
+      lg:block w-full overflow-hidden transition-all duration-300 fixed lg:static top-32 left-0 right-0 bottom-0 z-20 bg-white p-4
     `}>
       <div className="sticky top-0 z-10">
         <input
@@ -34,12 +34,12 @@ const Sidebar: React.FC<SidebarProps> = ({
         />
       </div>
 
-      <div className="overflow-y-auto mt-2" role="listbox">
+      <div className="overflow-y-auto mt-2" aria-label="รายการบทสวด" role="listbox">
         {prayers.map((prayer) => (
           <PrayerItem
-            key={prayer.key}
+            key={prayer.id}
             prayer={prayer}
-            isSelected={selectedPrayer.key === prayer.key}
+            isSelected={selectedPrayer.id === prayer.id}
             onSelect={onSelectPrayer}
           />
         ))}

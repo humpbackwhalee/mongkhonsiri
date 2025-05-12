@@ -5,7 +5,7 @@ const content = {
     mainText: "สงบจิตใจไปกับการสวดมนต์",
     subText: "เข้าถึงบทสวดมนต์ต่างๆ ได้ง่าย สะดวก ทุกที่ทุกเวลา",
     CTAText: "ดูบทสวดมนต์",
-    bannerImage: "/images/banner-image.jpg", // Ensure path is correct
+    bannerImage: "/images/banner-image.jpg",
     bannerAlt: "ภาพแบนเนอร์",
 };
 

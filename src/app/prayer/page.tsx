@@ -6,14 +6,8 @@ import LineNavigation from './components/LineNavigation';
 import PlaybackControls from './components/PlaybackControls';
 import SpeedControl from './components/SpeedControl';
 import MobileHeader from './components/MobileHeader';
-import prayerDataObject from '../data/prayerData';
-
+import prayerData from '../data/prayerData';
 import type { Prayer } from './components/PrayerItem';
-
-const prayerData: Prayer[] = Object.entries(prayerDataObject).map(([key, value]) => ({
-  key,
-  ...value,
-}));
 
 function useWindowSize() {
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -24,7 +18,7 @@ function useWindowSize() {
     };
 
     window.addEventListener('resize', handleResize);
-    handleResize(); // Set initial size
+    handleResize();
 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -35,12 +29,10 @@ function useWindowSize() {
 function useInterval(callback: () => void, delay: number | null, condition: boolean) {
   const savedCallback = useRef<(() => void) | null>(null);
 
-  // Remember the latest callback
   useEffect(() => {
     savedCallback.current = callback;
   }, [callback]);
 
-  // Set up the interval
   useEffect(() => {
     if (!condition || delay === null) return;
 
@@ -54,7 +46,7 @@ function useInterval(callback: () => void, delay: number | null, condition: bool
 }
 
 const initialState = {
-  selectedPrayer: prayerData[0],
+  selectedPrayer: prayerData[0] ?? null,
   currentLineIndex: 0,
   isPlaying: false,
   speed: 2000,
@@ -68,18 +60,16 @@ type PrayerAction =
   | { type: 'NEXT_LINE' }
   | { type: 'PREV_LINE' }
   | { type: 'SET_SPEED'; speed: number }
-  | { type: 'TOGGLE_DARK_MODE' }
   | { type: 'SELECT_LINE'; lineIndex: number };
-
 
 function prayerReducer(state: typeof initialState, action: PrayerAction) {
   switch (action.type) {
     case 'SELECT_PRAYER':
       return {
         ...state,
-        selectedPrayer: action.prayer,
+        selectedPrayer: action.prayer ?? prayerData[0] ?? null,
         currentLineIndex: 0,
-        isPlaying: false
+        isPlaying: false,
       };
     case 'PLAY':
       return { ...state, isPlaying: true };
@@ -87,26 +77,32 @@ function prayerReducer(state: typeof initialState, action: PrayerAction) {
       return { ...state, isPlaying: false };
     case 'RESET':
       return { ...state, isPlaying: false, currentLineIndex: 0 };
-    case 'SELECT_LINE':
-      return {
-        ...state,
-        currentLineIndex: action.lineIndex,
-        isPlaying: true, // หรือ false แล้วแต่ต้องการ behavior
-      };
     case 'NEXT_LINE':
       return {
         ...state,
-        currentLineIndex: (state.currentLineIndex + 1) % (state.selectedPrayer?.prayerText?.length || 1)
+        currentLineIndex: state.selectedPrayer && state.selectedPrayer.prayerText.length > 0
+          ? (state.currentLineIndex + 1) % state.selectedPrayer.prayerText.length
+          : 0,
       };
     case 'PREV_LINE':
       return {
         ...state,
-        currentLineIndex: state.currentLineIndex > 0
-          ? state.currentLineIndex - 1
-          : (state.selectedPrayer?.prayerText?.length - 1) || 0
+        currentLineIndex: state.selectedPrayer && state.selectedPrayer.prayerText.length > 0
+          ? state.currentLineIndex > 0
+            ? state.currentLineIndex - 1
+            : state.selectedPrayer.prayerText.length - 1
+          : 0,
       };
     case 'SET_SPEED':
       return { ...state, speed: action.speed };
+    case 'SELECT_LINE':
+      return {
+        ...state,
+        currentLineIndex: action.lineIndex >= 0 && action.lineIndex < (state.selectedPrayer?.prayerText.length ?? 0)
+          ? action.lineIndex
+          : state.currentLineIndex,
+        isPlaying: false,
+      };
     default:
       return state;
   }
@@ -120,22 +116,11 @@ export default function PrayerLyricsLoop() {
   const { width } = useWindowSize();
   const isMobile = width < 768;
 
-  // Memoize derived values
-  const prayerText = useMemo(() =>
-    state.selectedPrayer?.prayerText || [],
-    [state.selectedPrayer]
-  );
-
-  const prayerTitle = useMemo(() =>
-    state.selectedPrayer?.title || 'ไม่มีชื่อบทสวด',
-    [state.selectedPrayer]
-  );
-
+  const prayerText = useMemo(() => state.selectedPrayer?.prayerText || [], [state.selectedPrayer]);
+  const prayerTitle = useMemo(() => state.selectedPrayer?.title || 'ไม่มีชื่อบทสวด', [state.selectedPrayer]);
   const filteredPrayers = useMemo(() =>
     searchTerm.trim()
-      ? prayerData.filter(prayer =>
-        prayer.title.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      ? prayerData.filter(prayer => prayer.title.toLowerCase().includes(searchTerm.toLowerCase()))
       : prayerData,
     [searchTerm]
   );
@@ -146,29 +131,6 @@ export default function PrayerLyricsLoop() {
 
   useInterval(advanceToNextLine, state.speed, state.isPlaying && prayerText.length > 0);
 
-  // Save settings to localStorage
-  useEffect(() => {
-    localStorage.setItem('lastSelectedPrayer', state.selectedPrayer.key);
-    localStorage.setItem('lastSpeed', state.speed.toString());
-  }, [state.selectedPrayer, state.speed]);
-
-  // Load settings from localStorage on mount
-  useEffect(() => {
-    const lastSelectedKey = localStorage.getItem('lastSelectedPrayer');
-    if (lastSelectedKey) {
-      const lastPrayer = prayerData.find(p => p.key === lastSelectedKey);
-      if (lastPrayer) {
-        dispatch({ type: 'SELECT_PRAYER', prayer: lastPrayer });
-      }
-    }
-
-    const lastSpeed = localStorage.getItem('lastSpeed');
-    if (lastSpeed) {
-      dispatch({ type: 'SET_SPEED', speed: Number(lastSpeed) });
-    }
-  }, []);
-
-  // Scroll current line into view with smooth animation
   useEffect(() => {
     const element = document.getElementById(`line-${state.currentLineIndex}`);
     if (element) {
@@ -176,57 +138,40 @@ export default function PrayerLyricsLoop() {
     }
   }, [state.currentLineIndex]);
 
-  // UI event handlers - memoized to prevent re-creation
-  const handlePlay = useCallback(() => {
-    dispatch({ type: 'PLAY' });
-  }, []);
-
-  const handlePause = useCallback(() => {
-    dispatch({ type: 'PAUSE' });
-  }, []);
-
-  const handleReset = useCallback(() => {
-    dispatch({ type: 'RESET' });
-  }, []);
-
+  const handlePlay = useCallback(() => dispatch({ type: 'PLAY' }), []);
+  const handlePause = useCallback(() => dispatch({ type: 'PAUSE' }), []);
+  const handleReset = useCallback(() => dispatch({ type: 'RESET' }), []);
   const handleSelectPrayer = useCallback((prayer: Prayer) => {
     dispatch({ type: 'SELECT_PRAYER', prayer });
-    if (isMobile) {
-      setIsSidebarOpen(false); // Close sidebar on mobile after selection
-    }
+    if (isMobile) setIsSidebarOpen(false);
   }, [isMobile]);
-
-  const handlePrevLine = useCallback(() => {
-    dispatch({ type: 'PREV_LINE' });
-  }, []);
-
-  const handleNextLine = useCallback(() => {
-    dispatch({ type: 'NEXT_LINE' });
-  }, []);
-
+  const handlePrevLine = useCallback(() => dispatch({ type: 'PREV_LINE' }), []);
+  const handleNextLine = useCallback(() => dispatch({ type: 'NEXT_LINE' }), []);
   const handleSpeedChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: 'SET_SPEED', speed: Number(e.target.value) });
   }, []);
-
-  const toggleSidebar = useCallback(() => {
-    setIsSidebarOpen(prev => !prev);
+  const handleSelectLine = useCallback((lineIndex: number) => {
+    dispatch({ type: 'SELECT_LINE', lineIndex });
   }, []);
+  const toggleSidebar = useCallback(() => setIsSidebarOpen(prev => !prev), []);
 
-  // Handle empty prayer data
-  if (prayerData.length === 0) {
-    return <div className="flex justify-center items-center h-screen">ไม่พบข้อมูลบทสวด</div>;
+  if (!prayerData.length || !state.selectedPrayer) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-background text-text">
+        ไม่พบข้อมูลบทสวด
+      </div>
+    );
   }
 
   return (
-    <div className="container mx-auto flex flex-col md:flex-row min-h-screen transition-colors duration-300">
+    <div className="min-h-[calc(100vh-128px)] flex flex-col md:flex-row bg-background text-text transition-colors duration-300">
       <MobileHeader
         title="บทสวดมนต์"
         isSidebarOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
       />
 
-      {/* Prayer List */}
-      <div className="h-fit rounded-lg shadow-md transition-colors duration-300">
+      <div className="h-fit md:w-64 lg:w-80 rounded-lg shadow-md bg-background">
         <Sidebar
           isSidebarOpen={isSidebarOpen}
           prayers={filteredPrayers}
@@ -237,29 +182,25 @@ export default function PrayerLyricsLoop() {
         />
       </div>
 
-      {/* Prayer Text */}
-      <div className="flex flex-col items-center justify-start flex-grow">
-        <div className="w-full  md:min-w-4xl max-w-7xl mx-auto px-4 md:px-8 py-4">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl md:text-2xl font-semibold text-center flex-grow">
-              {prayerTitle}
-            </h2>
-          </div>
+      <main className="flex-1 flex flex-col items-center justify-start p-4 md:p-8">
+        <div className="w-full max-w-4xl">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold text-center mb-6 text-primary">
+            {prayerTitle}
+          </h2>
 
-          {/* Progress bar */}
-          <div className="w-full bg-gray-300 rounded-full h-1 mb-2">
+          <div className="w-full bg-muted rounded-full h-1 mb-4">
             <div
-              className="bg-gray-500 h-1 rounded-full transition-all duration-300"
-              style={{ width: `${(state.currentLineIndex / Math.max(1, prayerText.length - 1)) * 100}%` }}
+              className="bg-secondary h-1 rounded-full transition-all duration-300"
+              style={{
+                width: `${prayerText.length > 0 ? (state.currentLineIndex / (prayerText.length - 1)) * 100 : 0}%`,
+              }}
             ></div>
           </div>
 
           <PrayerDisplay
             prayerText={prayerText}
             currentLineIndex={state.currentLineIndex}
-            onSelectLine={(index) => {
-              dispatch({ type: 'SELECT_LINE', lineIndex: index }); // สมมติว่า reducer มี action นี้
-            }}
+            onSelectLine={handleSelectLine}
           />
 
           <LineNavigation
@@ -282,12 +223,11 @@ export default function PrayerLyricsLoop() {
             onSpeedChange={handleSpeedChange}
           />
 
-          {/* Line counter */}
-          <div className="text-center mt-4">
+          <div className="text-center mt-4 text-sm md:text-base text-secondary">
             บรรทัด {state.currentLineIndex + 1} จาก {prayerText.length}
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

@@ -20,7 +20,8 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   return (
     <aside className={`
-      ${isSidebarOpen ? 'block' : 'hidden'} lg:block w-full h-fit overflow-hidden transition-all duration-300 fixed lg:static top-14 left-0 right-0 bottom-0 z-20
+      ${isSidebarOpen ? 'block' : 'hidden'} 
+      lg:block w-full h-fit overflow-hidden transition-all duration-300 fixed lg:static top-32 left-0 right-0 bottom-0 z-20 bg-white p-4
     `}>
       <div className="sticky top-0 z-10">
         <input

@@ -3,12 +3,16 @@ import React, { useEffect, useRef } from 'react';
 interface PrayerDisplayProps {
   prayerText: string[];
   currentLineIndex: number;
+  onSelectLine?: (index: number) => void;
 }
 
-const PrayerDisplay: React.FC<PrayerDisplayProps> = ({ prayerText, currentLineIndex }) => {
+const PrayerDisplay: React.FC<PrayerDisplayProps> = ({ 
+  prayerText, 
+  currentLineIndex, 
+  onSelectLine 
+}) => {
   const currentLineRef = useRef<HTMLParagraphElement | null>(null);
 
-  // Scroll to current line when it changes
   useEffect(() => {
     if (currentLineRef.current) {
       currentLineRef.current.scrollIntoView({
@@ -26,13 +30,23 @@ const PrayerDisplay: React.FC<PrayerDisplayProps> = ({ prayerText, currentLineIn
         ) : (
           prayerText.map((line, index) => (
             <p
-              key={index}
+              key={line}
               ref={index === currentLineIndex ? currentLineRef : null}
-              className={`text-lg md:text-2xl lg:text-3xl leading-relaxed text-center py-1 px-3 my-1 w-fit transition-all duration-250 ${
+              aria-current={index === currentLineIndex}
+              className={`text-lg md:text-2xl lg:text-3xl leading-relaxed text-center py-1 px-3 my-1 w-fit transition-all duration-250 hover:bg-gray-100 ${
                 index === currentLineIndex 
                   ? 'bg-gray-800 text-white font-medium rounded-md' 
                   : 'text-gray-800'
               }`}
+              style={{ cursor: 'pointer' }}
+              onClick={() => onSelectLine?.(index)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  onSelectLine?.(index);
+                }
+              }}
             >
               {line}
             </p>

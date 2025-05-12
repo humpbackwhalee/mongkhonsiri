@@ -10,7 +10,7 @@ const SpeedControl: React.FC<SpeedControlProps> = ({ speed, onSpeedChange }) => 
     <div className="w-full max-w-md mx-auto">
       <div className="flex justify-between items-center mb-2">
         <span className="text-sm font-medium text-gray-700">ความเร็ว</span>
-        <span className="text-sm text-gray-600">{speed} ms</span>
+        <span className="text-sm text-gray-600">{speed/1000} วินาที</span>
       </div>
       
       <input
@@ -18,7 +18,7 @@ const SpeedControl: React.FC<SpeedControlProps> = ({ speed, onSpeedChange }) => 
         id="speed"
         name="speed"
         min="500"
-        max="5000"
+        max="3000"
         step="100"
         value={speed}
         onChange={onSpeedChange}
@@ -26,7 +26,7 @@ const SpeedControl: React.FC<SpeedControlProps> = ({ speed, onSpeedChange }) => 
         aria-label="ปรับความเร็วในการเปลี่ยนบรรทัด"
         aria-valuenow={speed}
         aria-valuemin={500}
-        aria-valuemax={5000}
+        aria-valuemax={3000}
       />
       
       <div className="flex justify-between text-xs text-gray-500 mt-1">

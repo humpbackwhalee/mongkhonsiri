@@ -1,19 +1,9 @@
 @import "tailwindcss";
-
-
-
-
+@import './style/color.css';
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
   margin: 0;
   padding: 0;
-
-  --color-primary: #000000;
-  --color-secondary: #4B5563;
-  --color-background: #FFFFFF;
-  --color-text: #1F2937;
 }
 
 @media (prefers-color-scheme: light) {

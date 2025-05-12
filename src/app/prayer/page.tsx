@@ -101,7 +101,7 @@ function prayerReducer(state: typeof initialState, action: PrayerAction) {
         currentLineIndex: action.lineIndex >= 0 && action.lineIndex < (state.selectedPrayer?.prayerText.length ?? 0)
           ? action.lineIndex
           : state.currentLineIndex,
-        isPlaying: false,
+        isPlaying: true,
       };
     default:
       return state;
@@ -126,8 +126,14 @@ export default function PrayerLyricsLoop() {
   );
 
   const advanceToNextLine = useCallback(() => {
-    dispatch({ type: 'NEXT_LINE' });
-  }, []);
+    if (state.isPlaying && prayerText.length > 0) {
+      if (state.currentLineIndex < prayerText.length - 1) {
+        dispatch({ type: 'NEXT_LINE' });
+      } else {
+        dispatch({ type: 'PAUSE' }); // หยุดเล่นเมื่อถึงบรรทัดสุดท้าย
+      }
+    }
+  }, [state.isPlaying, prayerText.length, state.currentLineIndex, dispatch]);
 
   useInterval(advanceToNextLine, state.speed, state.isPlaying && prayerText.length > 0);
 

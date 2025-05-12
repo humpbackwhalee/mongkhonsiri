@@ -18,29 +18,32 @@ const ibmPlexSansThaiLooped = IBM_Plex_Sans_Thai_Looped({
   subsets: ["thai"],
 });
 
+// Need to Update
 export const metadata: Metadata = {
-  title: "สวดมนต์ | Mongkhonsiri",
-  description: "สวดมนต์",
+  title: "สวดมนต์ | มงคลสิริ",
+  description: "สวดมนต์ออนไลน์ สะดวก รวดเร็ว พร้อมบทสวดมนต์หลากหลาย เสริมสิริมงคลในชีวิตประจำวัน",
   openGraph: {
-    title: "สวดมนต์ | Mongkhonsiri",
-    description: "สวดมนต์",
+    title: "สวดมนต์ | มงคลสิริ",
+    description: "สวดมนต์ออนไลน์ สะดวก รวดเร็ว พร้อมบทสวดมนต์หลากหลาย เสริมสิริมงคลในชีวิตประจำวัน",
     url: "https://mongkhonsiri.vercel.app",
-    siteName: "Mongkhonsiri",
+    siteName: "มงคลสิริ",
     images: [
       {
         url: "https://mongkhonsiri.vercel.app/images/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Mongkhonsiri OG Image",
+        alt: "ภาพหน้าจอแอปพลิเคชัน Mongkhonsiri แสดงบทสวดมนต์และฟังก์ชันการใช้งาน",
       },
     ],
     locale: "th_TH",
     type: "website",
   },
+  // Need to Update
   twitter: {
     card: "summary_large_image",
     site: "@MongkhonsiriApp",
-    creator: "@yourpersonalhandle",
+    creator: "@R&D_dev",
+    description: "แอปพลิเคชันสวดมนต์ออนไลน์ สะดวก รวดเร็ว พร้อมบทสวดมนต์หลากหลาย",
   },
 };
 

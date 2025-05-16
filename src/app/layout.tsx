@@ -21,7 +21,8 @@ const ibmPlexSansThaiLooped = IBM_Plex_Sans_Thai_Looped({
 // Need to Update
 export const metadata: Metadata = {
   title: "สวดมนต์ | มงคลสิริ",
-  description: "สวดมนต์ออนไลน์ สะดวก รวดเร็ว พร้อมบทสวดมนต์หลากหลาย เสริมสิริมงคลในชีวิตประจำวัน",
+  description: "สวดมนต์ก่อนนอน สวดมนตอนเช้า สวดมนต์ออนไลน์ สะดวก รวดเร็ว รวมบทสวดมนต์หลากหลาย เสริมสิริมงคลในชีวิตประจำวัน",
+  keywords: "สวดมนต์, สวดมนต์ออนไลน์, บทสวดมนต์, สวดมนต์ก่อนนอน, สวดมนต์เช้า, สวดมนต์ประจำวัน, ไหว้พระสวดมนต์, แผ่เมตตา, ชินบัญชร, มงคลสิริ",
   openGraph: {
     title: "สวดมนต์ | มงคลสิริ",
     description: "สวดมนต์ออนไลน์ สะดวก รวดเร็ว พร้อมบทสวดมนต์หลากหลาย เสริมสิริมงคลในชีวิตประจำวัน",
@@ -38,6 +39,7 @@ export const metadata: Metadata = {
     locale: "th_TH",
     type: "website",
   },
+
   // Need to Update
   twitter: {
     card: "summary_large_image",

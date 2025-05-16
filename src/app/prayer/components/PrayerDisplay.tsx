@@ -35,7 +35,7 @@ const PrayerDisplay: React.FC<PrayerDisplayProps> = ({
               ref={index === currentLineIndex ? currentLineRef : null}
               aria-current={index === currentLineIndex ? 'true' : 'false'}
               aria-label={`บรรทัด ${index + 1}: ${line}`} // Accessibility
-              className={`text-lg md:text-2xl lg:text-3xl leading-relaxed text-center py-1 px-3 my-1 w-fit transition-all duration-250 hover:bg-gray-100 ${
+              className={`text-lg md:text-2xl lg:text-3xl leading-relaxed text-center py-1 px-3 my-1 w-fit transition-all duration-250 hover:bg-gray-100 hover:rounded-md ${
                 index === currentLineIndex
                   ? 'bg-gray-800 text-white font-medium rounded-md'
                   : 'text-gray-800'

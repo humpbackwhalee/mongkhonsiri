@@ -1,5 +1,6 @@
 import React from 'react';
-import PrayerItem, { Prayer } from './PrayerItem';
+import PrayerItem from './PrayerItem';
+import { Prayer } from '../_utils/types';
 
 interface SidebarProps {
   isSidebarOpen: boolean;

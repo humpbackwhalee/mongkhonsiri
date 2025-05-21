@@ -14,7 +14,7 @@ import prayerData from '../data/prayerData';
 import { Prayer } from "./_utils/types";
 
 export default function PrayerLyricsLoop() {
-  console.log(prayerData);
+  // console.log(prayerData);
   const [state, dispatch] = useReducer(prayerReducer, initialState);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

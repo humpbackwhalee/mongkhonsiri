@@ -1,4 +1,3 @@
-// import PrayerItem from './PrayerItem';
 import { Prayer } from '../_utils/types';
 
 interface PrayerItemProps {

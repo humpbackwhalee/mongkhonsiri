@@ -1,3 +1,4 @@
+// Sidebar.tsx
 import React from 'react';
 import PrayerItem from './PrayerItem';
 import { Prayer } from '../_utils/types';

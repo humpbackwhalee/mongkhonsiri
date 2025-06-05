@@ -471,8 +471,8 @@ const prayerData = [
             "สังฆานุภาเวนะ ชิตันตะราโย",
             "สัทธัมมานุภาวะปาลิโต จะรามิ ชินะ ปัญชะเรติ"
         ],
-        // audioSrc: "",
-        audioTimings: [0, 3.5, 7.0],
+        audioSrc: "/audio/buchapratanatrai.mp3",
+        audioTimings: [0, 2, 4, 6, 8, 10],
     }
 ];
 

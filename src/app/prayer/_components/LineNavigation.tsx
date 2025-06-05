@@ -1,23 +1,33 @@
 import React from 'react';
+import { usePrayerContext } from '../_context/PrayerContext';
 
 interface LineNavigationProps {
-  currentLineIndex: number;
-  totalLines: number;
-  onPrevLine: () => void;
-  onNextLine: () => void;
+  // currentLineIndex: number; // From context
+  // totalLines: number; // From context
+  // onPrevLine: () => void; // From context
+  // onNextLine: () => void; // From context
 }
 
-const LineNavigation: React.FC<LineNavigationProps> = ({ 
-  currentLineIndex, 
-  totalLines, 
-  onPrevLine, 
-  onNextLine 
-}) => {
+const LineNavigation: React.FC<LineNavigationProps> = (
+  // {
+  // currentLineIndex,
+  // totalLines,
+  // onPrevLine,
+  // onNextLine
+  // }
+) => {
+  const { state, dispatch } = usePrayerContext();
+  const { currentLineIndex, selectedPrayer } = state;
+  const totalLines = selectedPrayer?.prayerText?.length || 0;
+
+  const handlePrevLine = () => dispatch({ type: 'PREV_LINE' });
+  const handleNextLine = () => dispatch({ type: 'NEXT_LINE' });
+
   return (
     <div className="flex items-center justify-center gap-3 mb-6">
       <button
         className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium p-2 rounded-full disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        onClick={onPrevLine}
+        onClick={handlePrevLine}
         disabled={totalLines === 0}
         aria-label="ย้อนกลับบรรทัด"
       >
@@ -30,7 +40,7 @@ const LineNavigation: React.FC<LineNavigationProps> = ({
       
       <button
         className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium p-2 rounded-full disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        onClick={onNextLine}
+        onClick={handleNextLine}
         disabled={totalLines === 0}
         aria-label="ไปบรรทัดถัดไป"
       >

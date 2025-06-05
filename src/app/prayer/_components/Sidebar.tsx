@@ -1,24 +1,32 @@
 import React from 'react';
 import PrayerItem from './PrayerItem';
 import { Prayer } from '../_utils/types';
+import { usePrayerContext } from '../_context/PrayerContext';
 
 interface SidebarProps {
   isSidebarOpen: boolean;
   prayers: Prayer[];
-  selectedPrayer: Prayer;
+  // selectedPrayer: Prayer; // Removed, will use context
   searchTerm: string;
   onSearchChange: (value: string) => void;
-  onSelectPrayer: (prayer: Prayer) => void;
+  onSelectPrayer: () => void; // Changed: No longer passes prayer object, just a trigger
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
   isSidebarOpen,
   prayers,
-  selectedPrayer,
+  // selectedPrayer, // Removed
   searchTerm,
   onSearchChange,
-  onSelectPrayer
+  onSelectPrayer // This prop will now primarily handle UI logic like closing the sidebar
 }) => {
+  const { state, dispatch } = usePrayerContext();
+
+  const handleSelectPrayer = (prayer: Prayer) => {
+    dispatch({ type: 'SELECT_PRAYER', prayer });
+    onSelectPrayer(); // Call original prop (now arg-less) for parent-side effects
+  };
+
   return (
     <aside className={`
       ${isSidebarOpen ? 'block' : 'hidden'} 
@@ -40,8 +48,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           <PrayerItem
             key={prayer.id}
             prayer={prayer}
-            isSelected={selectedPrayer.id === prayer.id}
-            onSelect={onSelectPrayer}
+            isSelected={state.selectedPrayer?.id === prayer.id} // Use context state
+            onSelect={handleSelectPrayer} // Use new handler
           />
         ))}
       </div>

@@ -1,11 +1,22 @@
 import React from 'react';
+import { usePrayerContext } from '../_context/PrayerContext';
 
 interface SpeedControlProps {
-  speed: number;
-  onSpeedChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  // speed: number; // From context
+  // onSpeedChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // From context
 }
 
-const SpeedControl: React.FC<SpeedControlProps> = ({ speed, onSpeedChange }) => {
+const SpeedControl: React.FC<SpeedControlProps> = (
+  // { speed, onSpeedChange } // Removed
+) => {
+  const { state, dispatch } = usePrayerContext();
+  const { speed } = state;
+
+  const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newSpeed = Number(e.target.value);
+    dispatch({ type: 'SET_SPEED', speed: newSpeed });
+  };
+
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="flex justify-between items-center mb-2">
@@ -21,7 +32,7 @@ const SpeedControl: React.FC<SpeedControlProps> = ({ speed, onSpeedChange }) => 
         max="3000"
         step="100"
         value={speed}
-        onChange={onSpeedChange}
+        onChange={handleSpeedChange}
         className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
         aria-label="ปรับความเร็วในการเปลี่ยนบรรทัด"
         aria-valuenow={speed}

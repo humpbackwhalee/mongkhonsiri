@@ -8,7 +8,7 @@ export type PrayerState = {
   speed: number;
 };
 
-type ActionType =
+export type ActionType =
   | { type: 'SELECT_PRAYER'; prayer: Prayer }
   | { type: 'PLAY' }
   | { type: 'PAUSE' }

@@ -1,17 +1,28 @@
 import React, { useEffect, useRef } from 'react';
+import { usePrayerContext } from '../_context/PrayerContext';
 
 interface PrayerDisplayProps {
-  prayerText: string[];
-  currentLineIndex: number;
-  onSelectLine?: (index: number) => void;
+  // prayerText: string[]; // Removed, will use context
+  // currentLineIndex: number; // Removed, will use context
+  // onSelectLine?: (index: number) => void; // Removed, will use context
 }
 
-const PrayerDisplay: React.FC<PrayerDisplayProps> = ({
-  prayerText,
-  currentLineIndex,
-  onSelectLine
-}) => {
+const PrayerDisplay: React.FC<PrayerDisplayProps> = (
+  // {
+  // prayerText, // Removed
+  // currentLineIndex, // Removed
+  // onSelectLine // Removed
+  // }
+) => {
+  const { state, dispatch } = usePrayerContext();
+  const { selectedPrayer, currentLineIndex } = state;
+  const prayerText = selectedPrayer?.prayerText || [];
+
   const currentLineRef = useRef<HTMLParagraphElement | null>(null);
+
+  const handleSelectLine = (index: number) => {
+    dispatch({ type: 'SELECT_LINE', lineIndex: index });
+  };
 
   useEffect(() => {
     if (currentLineRef.current) {
@@ -41,12 +52,12 @@ const PrayerDisplay: React.FC<PrayerDisplayProps> = ({
                   : 'text-gray-800'
               }`}
               style={{ cursor: 'pointer' }}
-              onClick={() => onSelectLine?.(index)}
+              onClick={() => handleSelectLine(index)}
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
-                  onSelectLine?.(index);
+                  handleSelectLine(index);
                   e.preventDefault(); // ป้องกันการเลื่อนหน้า
                 }
               }}

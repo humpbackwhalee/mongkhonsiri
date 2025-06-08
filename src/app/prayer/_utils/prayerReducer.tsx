@@ -24,7 +24,7 @@ export const initialState: PrayerState = {
   selectedPrayer: prayerData.length > 0 ? prayerData[0] : null,
   currentLineIndex: 0,
   isPlaying: false,
-  audioMode: 'continuous',
+  audioMode: 'sync',
   speed: 2000,
 };
 

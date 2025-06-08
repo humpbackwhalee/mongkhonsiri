@@ -64,7 +64,7 @@ export default function PrayerLyricsLoop() {
   const handleAudioLoaded = useCallback(() => {
     setAudioLoaded(true);
     setAudioError(null);
-    
+
     // Auto-sync to current line when audio loads (important for prayer switching)
     if (state.audioMode === 'sync' && state.selectedPrayer?.audioTimings) {
       const audioElement = audioRef.current;
@@ -128,7 +128,7 @@ export default function PrayerLyricsLoop() {
   }, [state.isPlaying, prayerText.length, state.currentLineIndex, state.audioMode, state.selectedPrayer, audioLoaded]);
 
   // Improved interval condition logic
-  const useIntervalCondition = useMemo(() => 
+  const useIntervalCondition = useMemo(() =>
     state.isPlaying &&
     prayerText.length > 0 &&
     (state.audioMode !== 'sync' || !state.selectedPrayer?.audioSrc || !audioLoaded),
@@ -148,7 +148,7 @@ export default function PrayerLyricsLoop() {
   // Improved audio playback with better error handling
   const handlePlay = useCallback(async () => {
     dispatch({ type: 'PLAY' });
-    
+
     const audioElement = audioRef.current;
     if (!audioElement || !state.selectedPrayer?.audioSrc) return;
 
@@ -190,13 +190,13 @@ export default function PrayerLyricsLoop() {
   const handleSelectPrayer = useCallback((prayer: Prayer) => {
     // Stop current playback first
     dispatch({ type: 'PAUSE' });
-    
+
     // Reset to first line when selecting new prayer
     dispatch({ type: 'RESET' });
-    
+
     // Then select the new prayer
     dispatch({ type: 'SELECT_PRAYER', prayer });
-    
+
     if (isMobile) setIsSidebarOpen(false);
 
     // Reset audio state
@@ -212,7 +212,7 @@ export default function PrayerLyricsLoop() {
       if (prayer.audioSrc) {
         audioElement.src = prayer.audioSrc;
         audioElement.load();
-        
+
         // Wait for audio to load before allowing sync
         audioElement.addEventListener('loadeddata', () => {
           // If we're in sync mode, set audio to start position
@@ -373,7 +373,7 @@ export default function PrayerLyricsLoop() {
 
           {/* Audio Element */}
           {state.selectedPrayer?.audioSrc && (
-            <audio ref={audioRef} preload="auto">
+            <audio ref={audioRef} preload="auto" controls >
               <source src={state.selectedPrayer.audioSrc} type="audio/mpeg" />
               Your browser does not support the audio element.
             </audio>

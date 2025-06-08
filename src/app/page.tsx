@@ -4,14 +4,13 @@ import HighlightSection from "./components/homeSection/HighlightSection";
 import OccasionSection from "./components/homeSection/OccasionSection";
 import FeatureSection from "./components/homeSection/FeatureSection";
 
-// Need to Update
 export const metadata: Metadata = {
-  title: "หน้าหลัก | มงคลสิริ",
-  description: "คำอธิบายที่น่าสนใจเกี่ยวกับหน้าหลักของเว็บไซต์คุณ พร้อมคีย์เวิร์ดที่เกี่ยวข้อง",
+  title: "มงคลสิริ - บทสวดมนต์และคำสอน",
+  description: "รวมบทสวดมนต์ คำสอน และเรื่องราวมงคลต่างๆ เพื่อความเป็นสิริมงคลในชีวิตประจำวัน",
   openGraph: {
-    title: "หน้าหลัก | มงคลสิริ",
-    description: "คำอธิบายที่น่าสนใจเกี่ยวกับหน้าหลักของเว็บไซต์คุณ พร้อมคีย์เวิร์ดที่เกี่ยวข้อง",
-    url: "https://yourwebsite.com",
+    title: "มงคลสิริ - บทสวดมนต์และคำสอน",
+    description: "รวมบทสวดมนต์ คำสอน และเรื่องราวมงคลต่างๆ เพื่อความเป็นสิริมงคลในชีวิตประจำวัน",
+    url: "https://mongkhonsiri.vercel.app/",
     siteName: "มงคลสิริ",
   },
 };

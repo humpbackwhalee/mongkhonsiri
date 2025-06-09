@@ -1,6 +1,7 @@
 import { Prayer } from './types';
 import prayerData from '../../data/prayerData';
-export type PrayerState = {
+
+type PrayerState = {
   selectedPrayer: Prayer | null;
   currentLineIndex: number;
   isPlaying: boolean;

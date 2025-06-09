@@ -320,7 +320,7 @@ export default function PrayerLyricsLoop() {
 
                 {/* Audio mode toggle button */}
                 <button
-                  className="ml-4 px-2 py-1 bg-secondary hover:bg-secondary/80 rounded-md text-xs text-white transition-colors"
+                  className="ml-4 px-2 py-1 bg-secondary hover:bg-secondary/80 rounded-md text-xs text-black transition-colors border-2"
                   onClick={toggleAudioMode}
                   disabled={!audioLoaded}
                 >
